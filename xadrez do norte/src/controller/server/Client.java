@@ -17,16 +17,20 @@ import java.net.Socket;
 import javax.swing.*;
 import java.awt.event.*;
 import javax.swing.JFrame;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
+import java.awt.Dimension;
 
 public class Client extends JFrame implements ActionListener, KeyListener {
     private static final long serialVersionUID = 1L;
     private JTextArea texto;
     private JTextField txtMsg;
     private JButton btnSend;
-    private JButton btnSair;
+    private JButton btnSair, btnLimpar;
     private JLabel lblHistorico;
     private JLabel lblMsg;
-    private JPanel pnlContent;
+    private Box pnlContent;
+    private Box hbox;
     private Socket socket;
     private OutputStream ou ;
     private Writer ouw;
@@ -38,46 +42,76 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     public Client() throws IOException{
         
         JLabel lblMessage = new JLabel("Verificar!");
-        txtIP = new JTextField("127.0.0.1");
+        txtIP = new JTextField("172.16.0.104");
         txtPorta = new JTextField("8080");
         txtNome = new JTextField("Cliente");
         Object[] texts = {lblMessage, txtIP, txtPorta, txtNome };
         JOptionPane.showMessageDialog(null, texts);
-        pnlContent = new JPanel();
+        pnlContent = Box.createVerticalBox();
+        pnlContent.setBorder(new EmptyBorder(10,10,10,10));
+        hbox = Box.createHorizontalBox();
+       
         texto              = new JTextArea(10,20);
         texto.setEditable(false);
         texto.setBackground(new Color(240,240,240));
         txtMsg                       = new JTextField(20);
         lblHistorico     = new JLabel("Histórico");
         lblMsg        = new JLabel("Mensagem");
+        lblMsg.setAlignmentX(CENTER_ALIGNMENT);
+        lblMsg.setAlignmentY(CENTER_ALIGNMENT);
+
+        lblHistorico.setAlignmentX(CENTER_ALIGNMENT);
+        lblHistorico.setAlignmentY(CENTER_ALIGNMENT);
+
         btnSend                     = new JButton("Enviar");
+        btnLimpar = new JButton("Limpar");
         btnSend.setToolTipText("Enviar Mensagem");
         btnSair           = new JButton("Sair");
         btnSair.setToolTipText("Sair do Chat");
+        btnLimpar.setToolTipText("Limpar as Mensagens");
         btnSend.addActionListener(this);
         btnSair.addActionListener(this);
+        btnLimpar.addActionListener(this);
         btnSend.addKeyListener(this);
+        btnLimpar.addKeyListener(this);
         txtMsg.addKeyListener(this);
         JScrollPane scroll = new JScrollPane(texto);
+        pnlContent.setSize(500,350);
+        Dimension d = new Dimension();
+        d.setSize(500, 300);
+        scroll.setSize(d.getSize());
+        texto.setSize(d.getSize());
         texto.setLineWrap(true);
         pnlContent.add(lblHistorico);
         pnlContent.add(scroll);
         pnlContent.add(lblMsg);
+        d.setSize(100, 50);
+        txtMsg.setSize(d.getSize());
+        txtMsg.setBorder(new EmptyBorder(0, 0, 10, 0));
         pnlContent.add(txtMsg);
-        pnlContent.add(btnSair);
-        pnlContent.add(btnSend);
+
+        hbox.add(btnSair);
+        hbox.add(btnLimpar);
+        hbox.add(btnSend);
+        
+        txtMsg.setMaximumSize(new Dimension(999999, 10));
+        txtMsg.setBorder(new EmptyBorder(0,0,10,0));
+        txtMsg.setHorizontalAlignment(JTextField.LEFT);
+
+        pnlContent.add(hbox);
         pnlContent.setBackground(Color.LIGHT_GRAY);
         texto.setBorder(BorderFactory.createEtchedBorder(Color.BLUE,Color.BLUE));
         txtMsg.setBorder(BorderFactory.createEtchedBorder(Color.BLUE, Color.BLUE));
-        setTitle(txtNome.getText());
+        setTitle("Chat, bate papo do "+txtNome.getText());
         setContentPane(pnlContent);
         setLocationRelativeTo(null);
         setResizable(false);
-        setSize(250,350);
+        setSize(400,350);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         var frm = getFrames()[0];
-
+        DefaultCaret caret = (DefaultCaret)texto.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         frm.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
               
@@ -121,12 +155,17 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     */
     public void sendMessage(String msg) throws IOException{
         boolean isQuit = msg.trim().equals("/quit");
-        
+        boolean isClean = msg.trim().equals("/clean") || msg.trim().equals("/clear");
         if(isQuit){
   
             bfw.write("/quit\r\n");
+            bfw.flush();
             sair();
             
+        }else if(isClean){
+            
+            texto.setText(null);
+
         }else{
             boolean isChangeNick = msg.startsWith("/nick");
             if(isChangeNick){
@@ -137,11 +176,14 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                 }else{
                     //System.out.println("Erro ao alterar o nickname do " + txtNome.getT);
                 }
+                setTitle("Chat, bate papo do "+split[1]);
             }else{
                 bfw.write(msg+"\r\n");
             }
+
+            bfw.flush();
         }
-        bfw.flush();
+       
         txtMsg.setText("");
     }
 
@@ -167,7 +209,14 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                 }
             }
 
+            if(socket.isClosed()){
+                texto.append("Server desligado.");
+                break;
+            }
+
         }
+
+       
     }
 
     /***
@@ -226,16 +275,25 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         
     }
 
+
   
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
             if(e.getActionCommand().equals(btnSend.getActionCommand())){
+
                 sendMessage(txtMsg.getText());
+
+            }else if(e.getActionCommand().equals(btnLimpar.getActionCommand())){
+
+                sendMessage("/clear");
+
             }
             else{
                 if(e.getActionCommand().equals(btnSair.getActionCommand())){
+
                     sendMessage("/quit");
+
                 }
             }
         } catch (IOException e1) {

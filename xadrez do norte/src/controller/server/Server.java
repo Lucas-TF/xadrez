@@ -55,9 +55,13 @@ public class Server extends Thread{
 
             nome = msg = bfr.readLine();
             msg = nome + " Entrou no chat!";
+            System.out.println(msg);
             sendToAll(bfw, msg);
             
-            while(msg != null &&  !shutdown){
+            while(msg != null && !shutdown){
+
+              
+
                 msg = bfr.readLine();
                 
                 if(msg != null){
@@ -70,6 +74,9 @@ public class Server extends Thread{
                     }
                     sendToAll(bfw, msg);
                 }
+
+                
+
             }
 
             
@@ -80,16 +87,36 @@ public class Server extends Thread{
         }
     }
 
-    public String ChangeNickName(String msg){
-        String[] split = msg.split(" ", 2);
-        if(split.length == 2){
-            msg = nome +" alterou seu nickname para "+split[1];
+    public String ChangeNickName(BufferedWriter bwSaida,String msg){
+        try {
+            String[] split = msg.split(" ", 2);
+            if(split.length == 2){
+                msg = "============="+nome +" alterou seu nickname para "+split[1]+"=============";
+                System.out.println(msg.length());
+                nome = split[1];
+            
+                bwSaida.write("=============Nick alterado com sucesso!=============");
+                bwSaida.newLine();
+                bwSaida.flush();
+
+            }else{
+                msg = "Erro ao alterar o nick para"+nome;
+            
+            
+                bwSaida.write(msg);
+                bwSaida.newLine();
+                bwSaida.flush();
+            
+                msg = "";
+            }
+
             System.out.println(msg);
-            nome = split[1];
-         
-        }else{
-            msg = "Erro ao alterar o nick para"+nome;
+           
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         return msg;
     }
 
@@ -104,31 +131,18 @@ public class Server extends Thread{
         boolean shutdown = false;
         if(msg.startsWith("/nick")){
     
-            String[] split = msg.split(" ", 2);
-            if(split.length == 2){
+            msg = ChangeNickName(bwSaida,msg);
 
-                msg = nome +" alterou seu nickname para "+split[1];
-                nome = split[1];
-               
-            }else{
-
-                msg = "Erro ao alterar o nickname do " + nome;
-                bwSaida.write(msg);
-                bwSaida.flush();
-                msg = "";
-
-            }
         }else if(msg.equals("/quit")){
 
-            msg = nome+" foi desconectado.";
+            msg = "============="+nome+" foi desconectado.=============";
             clientes.remove(bwSaida);
-
+            System.out.println(msg);
         }else if(msg.equals("/shutdown")){
-            msg = "Server desligado.";
+            msg = "=============Server desligado.=============";
             shutdown = true;
+            System.out.println(msg);
         }
-
-        System.out.println(msg);
 
         for(BufferedWriter bw : clientes){
             bw.write(msg+"\r\n");
@@ -145,7 +159,7 @@ public class Server extends Thread{
             shutdown = true;
             for(BufferedWriter bw : clientes){
                 
-                    bw.close();
+                bw.close();
             
             }
 
