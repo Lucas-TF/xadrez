@@ -77,10 +77,16 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         var frm = getFrames()[0];
+
         frm.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
               
-                sair();
+                try {
+                    sendMessage("/quit");
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
               
             }
         });
@@ -98,6 +104,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             bfw = new BufferedWriter(ouw);
             bfw.write(txtNome.getText()+"\r\n");
             bfw.flush();
+            //bfw.write(txtNome.getText()+"Entrou no chat\r\n");
         }catch(IOException e){
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Erro ao se conectar com o servidor!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -112,14 +119,27 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     * @param msg do tipo String
     * @throws IOException retorna IO Exception caso dê algum erro.
     */
-    public void enviarMensagem(String msg) throws IOException{
-
-        if(msg.equals("Sair")){
-            bfw.write("Desconectado \r\n");
-            texto.append("Desconectado \r\n");
+    public void sendMessage(String msg) throws IOException{
+        boolean isQuit = msg.trim().equals("/quit");
+        
+        if(isQuit){
+  
+            bfw.write("/quit\r\n");
+            sair();
+            
         }else{
-            bfw.write(msg+"\r\n");
-            texto.append( txtNome.getText() + " diz -> " +         txtMsg.getText()+"\r\n");
+            boolean isChangeNick = msg.startsWith("/nick");
+            if(isChangeNick){
+                String[] split = msg.split(" ", 2);
+                if(split.length == 2){
+                    bfw.write(msg+"\r\n");
+                    //txtNome.setText(split[1]);
+                }else{
+                    //System.out.println("Erro ao alterar o nickname do " + txtNome.getT);
+                }
+            }else{
+                bfw.write(msg+"\r\n");
+            }
         }
         bfw.flush();
         txtMsg.setText("");
@@ -136,7 +156,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         BufferedReader bfr = new BufferedReader(inr);
         String msg = "";
     
-        while(!"Sair".equalsIgnoreCase(msg))
+        while(!"Sair".equalsIgnoreCase(msg)){
     
             if(bfr.ready()){
                 msg = bfr.readLine();
@@ -146,6 +166,8 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                     texto.append(msg+"\r\n");
                 }
             }
+
+        }
     }
 
     /***
@@ -155,18 +177,18 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     public void sair(){
        
         try{
-            enviarMensagem("Sair");
             bfw.close();
             ouw.close();
             ou.close();
             socket.close();
+            texto.append("Desconectado \r\n");
         }catch(IOException e){
             e.printStackTrace();
         }
 
         new Thread(()->{
             try {
-                Thread.sleep(1000);
+                Thread.sleep(400);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -176,9 +198,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         }).start();
        
 
-    }
-
-   
+    }  
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -197,7 +217,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         
         if(e.getKeyCode() == KeyEvent.VK_ENTER){
             try {
-            enviarMensagem(txtMsg.getText());
+                sendMessage(txtMsg.getText());
             } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -210,11 +230,14 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            if(e.getActionCommand().equals(btnSend.getActionCommand()))
-                enviarMensagem(txtMsg.getText());
-            else
-                if(e.getActionCommand().equals(btnSair.getActionCommand()))
-                sair();
+            if(e.getActionCommand().equals(btnSend.getActionCommand())){
+                sendMessage(txtMsg.getText());
+            }
+            else{
+                if(e.getActionCommand().equals(btnSair.getActionCommand())){
+                    sendMessage("/quit");
+                }
+            }
         } catch (IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();

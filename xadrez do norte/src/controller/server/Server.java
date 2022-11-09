@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -22,6 +23,7 @@ public class Server extends Thread{
     private InputStream in;
     private InputStreamReader inr;
     private BufferedReader bfr;
+    private static boolean shutdown = false;
 
     /**
   * Método construtor
@@ -46,17 +48,27 @@ public class Server extends Thread{
         try{
     
             String msg;
-            OutputStream ou =  this.con.getOutputStream();
+            OutputStream ou = this.con.getOutputStream();
             Writer ouw = new OutputStreamWriter(ou);
             BufferedWriter bfw = new BufferedWriter(ouw);
             clientes.add(bfw);
+
             nome = msg = bfr.readLine();
-        
-            while(msg != null){
+            msg = nome + " Entrou no chat!";
+            sendToAll(bfw, msg);
+            
+            while(msg != null &&  !shutdown){
                 msg = bfr.readLine();
+                
                 if(msg != null){
+                    boolean isNotChangNickName = !msg.startsWith("/nick");
+                    boolean isNotQuit = !msg.equals("/quit");
+                    boolean isNotShutDown = !msg.equals("/shutdown");
+                    
+                    if(isNotChangNickName && isNotQuit && isNotShutDown){
+                        msg = nome +": "+msg;
+                    }
                     sendToAll(bfw, msg);
-                    System.out.println(msg);
                 }
             }
 
@@ -68,6 +80,19 @@ public class Server extends Thread{
         }
     }
 
+    public String ChangeNickName(String msg){
+        String[] split = msg.split(" ", 2);
+        if(split.length == 2){
+            msg = nome +" alterou seu nickname para "+split[1];
+            System.out.println(msg);
+            nome = split[1];
+         
+        }else{
+            msg = "Erro ao alterar o nick para"+nome;
+        }
+        return msg;
+    }
+
     /***
      * Método usado para enviar mensagem para todos os clients
      * @param bwSaida do tipo BufferedWriter
@@ -75,14 +100,67 @@ public class Server extends Thread{
      * @throws IOException
      */
     public void sendToAll(BufferedWriter bwSaida, String msg) throws  IOException {
-        BufferedWriter bwS;
+
+        boolean shutdown = false;
+        if(msg.startsWith("/nick")){
+    
+            String[] split = msg.split(" ", 2);
+            if(split.length == 2){
+
+                msg = nome +" alterou seu nickname para "+split[1];
+                nome = split[1];
+               
+            }else{
+
+                msg = "Erro ao alterar o nickname do " + nome;
+                bwSaida.write(msg);
+                bwSaida.flush();
+                msg = "";
+
+            }
+        }else if(msg.equals("/quit")){
+
+            msg = nome+" foi desconectado.";
+            clientes.remove(bwSaida);
+
+        }else if(msg.equals("/shutdown")){
+            msg = "Server desligado.";
+            shutdown = true;
+        }
+
+        System.out.println(msg);
 
         for(BufferedWriter bw : clientes){
-            bwS = (BufferedWriter)bw;
-            if(!(bwSaida == bwS)){
-                bw.write(nome + " -> " + msg+"\r\n");
-                bw.flush();
+            bw.write(msg+"\r\n");
+            bw.flush();
+        }
+
+        if(shutdown){
+            ShutDown();
+        }
+    }
+
+    public void ShutDown(){
+        try {
+            shutdown = true;
+            for(BufferedWriter bw : clientes){
+                
+                    bw.close();
+            
             }
+
+            if(!server.isClosed()){
+               
+                con.close();
+                server.close();
+                in.close();
+                inr.close();
+                bfr.close();
+            }
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
@@ -102,13 +180,20 @@ public class Server extends Thread{
             clientes = new ArrayList<BufferedWriter>();
             JOptionPane.showMessageDialog(null,"Servidor ativo na porta: "+
             txtPorta.getText());
-        
-            while(true){
-                    System.out.println("Aguardando conexão...");
-                    Socket con = server.accept();
-                    System.out.println("Cliente conectado...");
-                    Thread t = new Server(con);
-                    t.start();
+            
+            System.out.println("Aguardando conexão...");
+            while(shutdown == false){
+                    try{
+                        Socket con = server.accept();
+                        //System.out.println("Cliente conectado...");
+                        Thread t = new Server(con);
+                        t.start();
+                    }catch(SocketException e){
+                        boolean serverIsNotClose = !shutdown;
+                        if(serverIsNotClose){
+                            e.printStackTrace();
+                        }
+                    }
             }
     
         }catch (Exception e) {
