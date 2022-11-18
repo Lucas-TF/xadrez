@@ -27,6 +27,72 @@ public class lady extends piece {
             }
             i++;
         }
+        i = 1;
+        if(getLine()<destinationLine && destinationColumn == getColumn()){
+            while(getLine()+i<destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()+i, destinationColumn);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(getColumn()>destinationColumn && destinationLine == getLine()) {
+            while((getColumn()-i)>destinationColumn) {
+                piece pieceInsite = getBoard().getPiece(destinationLine, getColumn()-i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(getLine()>destinationLine && destinationColumn == getColumn()) {
+            while((getLine()-i)>destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()-i, destinationColumn);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(getColumn()<destinationColumn && destinationLine == getLine()) {
+            while(i<destinationColumn) {
+                piece pieceInsite = getBoard().getPiece(destinationLine, i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(destinationLine > getLine() && destinationColumn > getColumn()) {
+            while((getLine()+i) < destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()+i, getColumn()+i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }else if(destinationLine < getLine() && destinationColumn < getColumn()){
+            while((getLine()-i) > destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()-i, getColumn()-i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }else if(destinationLine < getLine() && destinationColumn > getColumn()){
+            while((getLine()-i) > destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()-i, getColumn()+i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(destinationLine > getLine() && destinationColumn < getColumn()){
+            while((getLine()+i) < destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()+i, getColumn()-i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }  
         return true;
     }
 }

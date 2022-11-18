@@ -21,8 +21,8 @@ public class jBoard extends JPanel implements MouseListener {
 
     public void drawBoard() {
         this.removeAll();
-        this.setLayout(new GridLayout(11,8));
-        for(int i=0; i<11; i++) {
+        this.setLayout(new GridLayout(8,8));
+        for(int i=0; i<8; i++) {
             for(int j=0; j<8; j++) {
                 jCell jCell;
                 piece piece = this.board.getPiece(i, j);

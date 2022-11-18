@@ -3,8 +3,6 @@ package model;
 //create by @Lucastavaresfds
 public class bishop extends piece {
 
-    private piece pieceInsite;
-
     public bishop(numberColor color, int line, int column) {
         super(color, line, column, "src/img/"+color+"BISHOP.png");
     }
@@ -26,7 +24,41 @@ public class bishop extends piece {
                 return false;
             }
             i++;
-        } 
+        }
+        i = 1;
+        if(destinationLine > getLine() && destinationColumn > getColumn()) {
+            while((getLine()+i) < destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()+i, getColumn()+i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }else if(destinationLine < getLine() && destinationColumn < getColumn()){
+            while((getLine()-i) > destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()-i, getColumn()-i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }else if(destinationLine < getLine() && destinationColumn > getColumn()){
+            while((getLine()-i) > destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()-i, getColumn()+i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        } else if(destinationLine > getLine() && destinationColumn < getColumn()){
+            while((getLine()+i) < destinationLine) {
+                piece pieceInsite = getBoard().getPiece(getLine()+i, getColumn()-i);
+                if(pieceInsite != null) {
+                    return false;
+                }
+                i++;
+            }
+        }  
         return true;
     }   
 }
