@@ -13,7 +13,20 @@ public class lady extends piece {
 
     @Override
     public boolean analyzeMovement(int destinationLine, int destinationColumn) {
+        int i = 1;
+        while(i<8) {
+            if(destinationLine == getLine()+i && destinationColumn > getColumn()+i 
+            || destinationLine > getLine()+i && destinationColumn == getColumn()+i 
+            || destinationLine == getLine()-i && destinationColumn < getColumn()-i
+            || destinationLine < getLine()-i && destinationColumn == getColumn()-i
+            || destinationLine == getLine()+i && destinationColumn < getColumn()-i
+            || destinationLine > getLine()+i && destinationColumn == getColumn()-i
+            || destinationLine == getLine()-i && destinationColumn > getColumn()+i
+            || destinationLine < getLine()-i && destinationColumn == getColumn()+i) {
+                return false;
+            }
+            i++;
+        }
         return true;
     }
-    
 }

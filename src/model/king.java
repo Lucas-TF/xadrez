@@ -13,6 +13,18 @@ public class king extends piece {
 
     @Override
     public boolean analyzeMovement(int destinationLine, int destinationColumn) {
+        if(destinationLine == getLine()+1 && destinationColumn > getColumn()+1 
+        || destinationLine > getLine()+1 && destinationColumn == getColumn()+1 
+        || destinationLine == getLine()-1 && destinationColumn < getColumn()-1
+        || destinationLine < getLine()-1 && destinationColumn == getColumn()-1
+        || destinationLine == getLine()+1 && destinationColumn < getColumn()-1
+        || destinationLine > getLine()+1 && destinationColumn == getColumn()-1
+        || destinationLine == getLine()-1 && destinationColumn > getColumn()+1
+        || destinationLine < getLine()-1 && destinationColumn == getColumn()+1
+        || destinationLine > getLine()+1 || destinationColumn > getColumn()+1
+        || destinationLine < getLine()-1 || destinationColumn < getColumn()-1) {
+            return false;   
+        }
         return true;
     }
     

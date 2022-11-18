@@ -19,7 +19,7 @@ public class board {
 
     public board(controlTime controlTime) {
         this.controlTime = controlTime;
-        this.pieces = new piece[8][8];
+        this.pieces = new piece[11][8];
         this.piecesOut = new ArrayList<>();
         tower whiteTower1 = new tower(numberColor.WHITE, 0, 0);
         tower whiteTower2 = new tower(numberColor.WHITE, 0, 7);
@@ -29,10 +29,26 @@ public class board {
         bishop whiteBishop2 = new bishop(numberColor.WHITE, 0, 5);
         lady whiteLady = new lady(numberColor.WHITE, 0, 3);
         king whiteKing = new king(numberColor.WHITE, 0, 4);
-        for (int i = 0; i<8; i++) {
+        tower blackTower1 = new tower(numberColor.BLACK, 10, 0);
+        tower blackTower2 = new tower(numberColor.BLACK, 10, 7);
+        horse blackHorse1 = new horse(numberColor.BLACK, 10, 1);
+        horse blackHorse2 = new horse(numberColor.BLACK, 10, 6);
+        bishop blackBishop1 = new bishop(numberColor.BLACK, 10, 2);
+        bishop blackBishop2 = new bishop(numberColor.BLACK, 10, 5);
+        lady blackLady = new lady(numberColor.BLACK, 10, 3);
+        king blackKing = new king(numberColor.BLACK, 10, 4);
+        /*for (int i = 0; i<8; i++) {
             pawn whitePawn = new pawn(numberColor.WHITE, 1, i);
+            pawn blackPawn = new pawn(numberColor.BLACK, 9, i);
             this.addPiece(whitePawn);
+            this.addPiece(blackPawn);
         }
+        for (int i = 0; i<8; i++) {
+            pawn blackPawn = new pawn(numberColor.BLACK, 8, i);
+            this.addPiece(blackPawn);
+            pawn whitePawn = new pawn(numberColor.WHITE, 2, i);
+            this.addPiece(whitePawn);
+        }*/
         this.addPiece(whiteTower1);
         this.addPiece(whiteTower2);
         this.addPiece(whiteHorse1);
@@ -41,19 +57,6 @@ public class board {
         this.addPiece(whiteBishop2);
         this.addPiece(whiteLady);
         this.addPiece(whiteKing);    
-
-        tower blackTower1 = new tower(numberColor.BLACK, 7, 0);
-        tower blackTower2 = new tower(numberColor.BLACK, 7, 7);
-        horse blackHorse1 = new horse(numberColor.BLACK, 7, 1);
-        horse blackHorse2 = new horse(numberColor.BLACK, 7, 6);
-        bishop blackBishop1 = new bishop(numberColor.BLACK, 7, 2);
-        bishop blackBishop2 = new bishop(numberColor.BLACK, 7, 5);
-        lady blackLady = new lady(numberColor.BLACK, 7, 3);
-        king blackKing = new king(numberColor.BLACK, 7, 4);
-        for (int i = 0; i<8; i++) {
-            pawn whitePawn = new pawn(numberColor.BLACK, 6, i);
-            this.addPiece(whitePawn);
-        }
         this.addPiece(blackTower1);
         this.addPiece(blackTower2);
         this.addPiece(blackHorse1);
@@ -109,10 +112,6 @@ public class board {
             this.pieces[piece.getLine()][piece.getColumn()] = null;
             piece.setLine(newLine);
             piece.setColumn(newColumn);
-            if(piece instanceof pawn) {
-                pawn pawn = (pawn) piece;
-                pawn.setFistmovement(false);
-            }
             this.setPiece(piece);
             this.selectPiece(piece);
             

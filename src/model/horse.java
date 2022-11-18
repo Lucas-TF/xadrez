@@ -11,6 +11,17 @@ public class horse extends piece{
     }
     @Override
     public boolean analyzeMovement(int destinationLine, int destinationColumn) {
-        return true;
+        if(destinationLine == getLine()+2 && destinationColumn == getColumn()+1
+        || destinationLine == getLine()-2 && destinationColumn == getColumn()+1
+        || destinationLine == getLine()+2 && destinationColumn == getColumn()-1
+        || destinationLine == getLine()-2 && destinationColumn == getColumn()-1
+        || destinationLine == getLine()+1 && destinationColumn == getColumn()+2
+        || destinationLine == getLine()-1 && destinationColumn == getColumn()+2
+        || destinationLine == getLine()+1 && destinationColumn == getColumn()-2
+        || destinationLine == getLine()-1 && destinationColumn == getColumn()-2) {
+           return true; 
+        }else{
+           return false;
+        }
     }
 }

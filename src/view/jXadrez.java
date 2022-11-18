@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.FlowLayout;
 
 // Create by @Lucastavaresfds
 public class jXadrez extends JFrame {
@@ -26,7 +25,6 @@ public class jXadrez extends JFrame {
     private JButton resetGame,passTurn;
     private final controlTime controlTime;
     private final jBoard jBoard;
-    public static final JPanel jCemetery = new JPanel();
     public JProgressBar progressBar;
 
     public jXadrez() {
@@ -43,7 +41,7 @@ public class jXadrez extends JFrame {
         
         
         JPanel pntop = new JPanel();
-        lbturn = new JLabel("VEZ DE BRANCO");
+        lbturn = new JLabel("VEZ DE WHITE");
         pntop.add(lbturn);
         this.add(pntop, BorderLayout.NORTH);
 
@@ -60,9 +58,6 @@ public class jXadrez extends JFrame {
                 resetGame();
             }
         });
-
-        //jCemetery.setLayout(new FlowLayout());
-        this.add(jCemetery,BorderLayout.EAST);
 
         this.add(jpright, BorderLayout.WEST);
         this.add(progressBar, BorderLayout.SOUTH);
