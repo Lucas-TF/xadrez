@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 import model.board;
-import view.jBoard;
+import view.xadrez.jBoard;
 
 public class controlTime implements Runnable{
 

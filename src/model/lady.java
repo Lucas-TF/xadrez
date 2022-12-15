@@ -54,7 +54,7 @@ public class lady extends piece {
             }
         } else if(getColumn()<destinationColumn && destinationLine == getLine()) {
             while(i<destinationColumn) {
-                piece pieceInsite = getBoard().getPiece(destinationLine, i);
+                piece pieceInsite = getBoard().getPiece(destinationLine, getLine()+i);
                 if(pieceInsite != null) {
                     return false;
                 }

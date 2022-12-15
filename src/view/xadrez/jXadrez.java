@@ -1,4 +1,4 @@
-package view;
+package view.xadrez;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controller.controlTime;
-import view.jXadrez;
+import view.xadrez.jXadrez;
 
 //create by @Lucastavaresfds
 public class board {

@@ -23,7 +23,8 @@ public class pawn extends piece {
         }else{
             newsite = getLine()-1;
         }
-        if(pieceInsite == null && destinationColumn != getColumn() || destinationLine != newsite) {
+        if(pieceInsite == null && destinationColumn != getColumn() || destinationLine != newsite
+        || pieceInsite != null && destinationColumn == getColumn()) {
             return false;
         }
         return true;
