@@ -138,7 +138,7 @@ public class board {
                 if(piece == null) {//move para um lugar sem peças
                     this.movPiece(this.pieceSelect, line, column);
                 }
-                if(piece != null && !piece.getColor().equals(this.pieceSelect.getColor())) {// come a peça do adversario
+                if(piece != null && !piece.getColor().equals(this.pieceSelect.getColor()) && !piece.isImaking()) {// come a peça do adversario
                     piece.setEliminated(true); 
                     this.piecesOut.add(piece);
                     this.movPiece(this.pieceSelect, line, column);

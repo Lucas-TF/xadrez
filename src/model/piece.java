@@ -10,6 +10,7 @@ public abstract class piece {
     private boolean eliminated = false;
     private boolean select = false;
     private board board;
+    private boolean imaking;
     
     public piece(numberColor color, int line, int column, String image){
         this.color = color;
@@ -61,6 +62,14 @@ public abstract class piece {
     }
     public void setBoard(board board) {
         this.board = board;
+    }
+
+    public boolean isImaking() {
+        return imaking;
+    }
+
+    public void setImaking(boolean imaking) {
+        this.imaking = imaking;
     }
 
 }

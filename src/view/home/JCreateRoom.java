@@ -15,6 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
+import view.xadrez.jXadrez;
+
 import java.awt.event.*;
 /**
  * Classe da criação de salas.
@@ -82,9 +85,10 @@ public class JCreateRoom extends JFrame{
 
 
         this.setTitle("Criar Sala");
-        setResizable(false);
+        // setResizable(false);
         setSize(300,200);
         setVisible(true);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
@@ -93,6 +97,7 @@ public class JCreateRoom extends JFrame{
      */
     private void Keys(){
         btnCancel.addActionListener(action->{
+            new JRooms();
             dispose();
         });
 
@@ -112,6 +117,8 @@ public class JCreateRoom extends JFrame{
             JOptionPane.showMessageDialog(null, "Informe o nome da sala!", "Atenção!",JOptionPane.WARNING_MESSAGE);
         }else{
             //TO DO: Salvar os valores da sala no banco de dados e ir para a tela de xadrez em seguida.
+            new jXadrez();
+            dispose();
         }
     }
 

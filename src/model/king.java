@@ -1,10 +1,14 @@
 package model;
 
-//create by @Lucastavaresfds
+/**
+ * create by @Lucastavaresfds
+ * King class xadrez 
+ */
 public class king extends piece {
 
     public king(numberColor color, int line, int column) {
         super(color, line, column, "src/img/"+color+"KING.png");
+        setImaking(true);
     }
 
     public king(numberColor color, int line, int column, String image) {

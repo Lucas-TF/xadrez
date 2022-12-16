@@ -2,6 +2,8 @@ package view.home;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -10,14 +12,18 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 
 import java.awt.Container;
-
+/**
+ *  Tela inicial 
+ */
 public class JRooms extends JFrame{
 
     private JTextField txtfind;
     private JButton btnCreate,btnfind;
     private Box vbox;
     private Box hbox;
-    
+    /**
+     *  Construtor da tela inicial 
+     */
     public JRooms(){
         Dimension d = new Dimension();
         d.setSize(475,30);
@@ -52,6 +58,14 @@ public class JRooms extends JFrame{
         setSize(500,500);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        btnCreate.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              new JCreateRoom();
+              dispose(); 
+            }
+        });
     }
     public Container getSpace(int w ,int h){
         Dimension a = new Dimension();

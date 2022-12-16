@@ -11,8 +11,11 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import controller.connectToDatabase.Quest;
 
 
 public class JLogin extends JFrame implements MouseListener{
@@ -23,6 +26,9 @@ public class JLogin extends JFrame implements MouseListener{
     private JButton btnEnter;
     private final JLabel lblCadastro;
 
+    /**
+     * Construtor tela Login
+     */
     public JLogin() {
         JLabel lblMessage = new JLabel("Login");
         lblMessage.setBounds(10, 5, 100, 30);
@@ -60,12 +66,22 @@ public class JLogin extends JFrame implements MouseListener{
         btnEnter.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                new JRooms();    
-                dispose();
+                if(!(txtNick.getText().equals("")) | !(String.valueOf(psPassword.getPassword()).equals(""))) { 
+                    if(!(Quest.Count("Select id from tbusuarios where nome='"+txtNick.getText()+"' and senha='"+String.valueOf(psPassword.getPassword())+"'").equals("0"))){  
+                        new JRooms();    
+                        dispose();   
+                    } else{
+                        JOptionPane.showMessageDialog(null,"Usuario ou Senha Incorreta");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null,"Preencha todos os campos");
+                }
+                
             }
         });   
     }     
 
+    
     @Override
     public void mouseClicked(MouseEvent e) {
         new JRegister(); 
